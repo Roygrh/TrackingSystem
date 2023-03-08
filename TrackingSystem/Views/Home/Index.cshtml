@@ -1,0 +1,142 @@
+﻿@model TrackingSystem.ViewModels.IndexVM
+
+@{
+    ViewData["Title"] = "Lista de usuarios";
+}
+
+<h2>LISTA DE USUARIOS</h2>
+
+<div class="row container form-inline col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <p>
+        <a asp-action="Create" type="button" class="btn btn-outline-info">Registrar Usuario</a>
+    </p>
+</div>
+
+<div class="form-horizontal">
+    <div class="input-group d-flex justify-content-center col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+        <input id="search" type="search" class="form-control rounded col-10 col-sm-10 col-md-10 col-lg-10 col-xl-10" placeholder="Buscar" aria-label="Buscar"
+               aria-describedby="search-addon" value="@Model.Phrase" />
+        <button type="button" class="btn btn-outline-dark col-2 col-sm-2 col-md-2 col-lg-2 col-xl-2" onclick="Search()">buscar</button>
+    </div>
+</div>
+
+<br>
+
+<div class="card border-dark mb-3 main-table" style="max-width: 70rem;">
+    <div class="card-header text-dark"><h4>Datos de las comisiones</h4></div>
+    <div class="card-body text-dark">
+        <form asp-action="Index" asp-controller="Home" method="post">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Candidate.FirstName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Candidate.LastName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Candidate.EmailAdress)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Candidate.PhoneNumber)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Candidate.ResidentialZipCode)
+                        </th>
+                        <th>
+                            Operaciones
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Candidates)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.FirstName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.LastName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.EmailAdress)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PhoneNumber)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ResidentialZipCode)
+                            </td>
+                            <td>
+                                <div class="form-inline">
+                                    <button type="button" title="Detalle" value="Detalle" class="btn btn-outline-info" onclick="location.href='@Url.Action("Details", "Home", new { id = item.CandidateId })'">
+                                        <i class="fa fa-eye"></i>
+                                        Details
+                                    </button>
+                                    <button type="button" title="Editar" value="Editar" class="btn btn-outline-success" onclick="location.href='@Url.Action("Edit", "Home", new { id = item.CandidateId })'">
+                                        <i class="fa fa-edit"></i>
+                                        Edit
+                                    </button>
+                                    <button type="button" class="btn btn-outline-danger" title="Borrar" value="Borrar" onclick="location.href='@Url.Action("Delete", "Home", new { id = item.CandidateId })'">
+                                        <i class="fas fa-trash-alt"></i>
+                                        Delete
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <input type="hidden" id="phrase_id" name="phrase" />
+            <input type="hidden" id="page_id" name="page" />
+        </form>
+    </div>
+</div>
+
+<nav aria-label="...">
+    <ul class="pagination">
+        <!--<li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1">Previous</a>
+        </li>-->
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            @if (i == Model.CurrentPage)
+            {
+                <li class="page-item active">
+                    <a class="page-link" href="#">@i<span class="sr-only">(current)</span></a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item"><a class="page-link" href="javascript:PagerClick(@i);">@i</a></li>
+            }
+        }
+        <!--<li class="page-item">
+            <a class="page-link" href="#">Next</a>
+        </li>-->
+    </ul>
+</nav>
+
+<script type="text/javascript">
+    function PagerClick(index) {
+        document.getElementById("page_id").value = index;
+        document.forms[0].submit();
+    }
+
+    function Search() {
+        document.getElementById("page_id").value = 1;
+        SearchPhrase();
+    }
+
+    function SearchPhrase() {
+        document.getElementById("phrase_id").value = document.getElementById("search").value;
+        document.forms[0].submit();
+    }
+
+    $("#search").keyup(function (e) {
+        if (e.keyCode == 13) {
+            Search();
+        }
+    });
+</script>
